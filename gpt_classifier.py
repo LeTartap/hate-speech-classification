@@ -12,7 +12,10 @@ dfs = {}
 
 # load data
 for n in names:
-    dfs[n] = pd.read_csv(os.path.join(folder_path, f"cleaned_{n.lower()}.csv"))
+    df = pd.read_csv(os.path.join(folder_path, f"cleaned_{n.lower()}.csv"))
+    df_label_1 = df[df["label"] == 1].head(10)
+    df_label_0 = df[df["label"] == 0].head(10)
+    dfs[n] = pd.concat([df_label_1, df_label_0], axis=0).reset_index(drop=True)
 
 print(dfs["Facebook"]["label"].unique())
 # get api key
@@ -36,11 +39,11 @@ for name in names:
     y = dfs[name]['label']
 
     # Split the DataFrame
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.001, random_state=42, stratify=y)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
 
     # Combine X and y back into DataFrames
-    train_dfs[name] = pd.concat([X_train, y_train], axis=1)
-    test_dfs[name] = pd.concat([X_test, y_test], axis=1)
+    train_dfs[name] = pd.concat([X_train, y_train], axis=1).reset_index(drop=True)
+    test_dfs[name] = pd.concat([X_test, y_test], axis=1).reset_index(drop=True)
 
 # a wrapper dictionary, to hold all of the api messages, for the purpose of parallel processing.
 content = {} 
@@ -67,7 +70,7 @@ for name in names:
 for id, label in result.items():
     df_name, row_index = id.split("_")[0], int(id.split("_")[1])
     result_dfs[df_name].at[row_index, 'predicted'] = label
-   
+print(result_dfs) 
 results = {}
 for name in names:  
     y_test = result_dfs[name]["label"]
