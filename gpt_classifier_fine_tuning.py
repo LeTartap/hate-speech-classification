@@ -29,7 +29,7 @@ with open(key_path, "r") as f:
 system_message = (
     "You are a hate-speech classifier, which is only allowed to otput two numbers: 1 if the provided text is hate speech, "
     "0 if the provided text does not contain hate speech. You will receive a piece of text (a comment/post by a user posted on the internet), "
-    "to which you will replace with a classification number (1 if hate speech, 0 if not hate-speech). "
+    "to which you will reply with a classification number (1 if hate speech, 0 if not hate-speech). "
     )
 
 # split data into training and test sets while stratyfying labels
@@ -139,7 +139,6 @@ for name, test_df in test_dfs.items():
     for id, label in result.items():
         row_index = int(id)
         result_dfs[name].at[row_index, 'predicted'] = label
-print(result_dfs)
 results = {}
 for name in names:  
     y_test = result_dfs[name]["label"].astype("int64")

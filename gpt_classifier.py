@@ -27,7 +27,7 @@ with open(key_path, "r") as f:
 system_message = (
     "You are a hate-speech classifier, which is only allowed to otput two numbers: 1 if the provided text is hate speech, "
     "0 if the provided text does not contain hate speech. You will receive a piece of text (a comment/post by a user posted on the internet), "
-    "to which you will replace with a classification number (1 if hate speech, 0 if not hate-speech). "
+    "to which you will reply with a classification number (1 if hate speech, 0 if not hate-speech). "
     )
 
 # Split data
@@ -67,16 +67,16 @@ for name in names:
     result_dfs[name] = test_dfs[name].copy()
     result_dfs[name]["predicted"] = None
 
+
 for id, label in result.items():
     df_name, row_index = id.split("_")[0], int(id.split("_")[1])
     result_dfs[df_name].at[row_index, 'predicted'] = label
-print(result_dfs) 
+
+print(result_dfs["Twitter"])
 results = {}
 for name in names:  
     y_test = result_dfs[name]["label"]
     y_pred = result_dfs[name]["predicted"].astype("int64")
-    print(y_test)
-    print(y_pred)
     # Evaluate classifier
     report = classification_report(y_test, y_pred, output_dict=True)
     accuracy = accuracy_score(y_test, y_pred)
