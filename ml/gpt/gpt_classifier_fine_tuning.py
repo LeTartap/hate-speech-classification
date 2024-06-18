@@ -21,7 +21,7 @@ for n in names:
     dfs[n] = pd.concat([df_label_1, df_label_0], axis=0).reset_index(drop=True)
 print(dfs["Facebook"]["label"].unique())
 # get api key
-key_path = "hate-speech-classification\gpt-api-key.txt"
+key_path = "hate-speech-classification\ml\gpt\gpt-api-key.txt"
 with open(key_path, "r") as f:
     api_key = f.read().strip()
 
