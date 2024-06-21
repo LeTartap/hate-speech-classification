@@ -1,25 +1,19 @@
-from sklearn.metrics import classification_report, accuracy_score
 from utilities.generator import Generator
 from utilities.parameters import Parameters
 import pandas as pd
 import os 
-from sklearn.model_selection import train_test_split
+import numpy as np
+from sklearn.metrics import classification_report, accuracy_score, precision_score, recall_score, f1_score
 
 
-folder_path = "hate-speech-classification\data"
+folder_path_test = "hate-speech-classification\data\cleaned\\test"
 names = ["Facebook", "Reddit", "Twitter", "Youtube"]
-dfs = {}
 
-# load data
-for n in names:
-    df = pd.read_csv(os.path.join(folder_path, f"cleaned_{n.lower()}.csv"))
-    df_label_1 = df[df["label"] == 1].head(10)
-    df_label_0 = df[df["label"] == 0].head(10)
-    dfs[n] = pd.concat([df_label_1, df_label_0], axis=0).reset_index(drop=True)
+# Load datasets
+dfs_test = {n: pd.read_csv(os.path.join(folder_path_test, f"{n.lower()}_test.csv")) for n in names}
 
-print(dfs["Facebook"]["label"].unique())
 # get api key
-key_path = "hate-speech-classification\gpt-api-key.txt"
+key_path = "hate-speech-classification\ml\gpt\gpt-api-key.txt"
 with open(key_path, "r") as f:
     api_key = f.read().strip()
 
@@ -30,24 +24,10 @@ system_message = (
     "to which you will reply with a classification number (1 if hate speech, 0 if not hate-speech). "
     )
 
-# Split data
-test_dfs = {}
-train_dfs = {}
-for name in names:
-    # Separate features and target
-    X = dfs[name].drop(columns='label')
-    y = dfs[name]['label']
-
-    # Split the DataFrame
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
-
-    # Combine X and y back into DataFrames
-    train_dfs[name] = pd.concat([X_train, y_train], axis=1).reset_index(drop=True)
-    test_dfs[name] = pd.concat([X_test, y_test], axis=1).reset_index(drop=True)
 
 # a wrapper dictionary, to hold all of the api messages, for the purpose of parallel processing.
 content = {} 
-for name, df in test_dfs.items():
+for name, df in dfs_test.items():
     for row in df.itertuples(index=True, name='Pandas'):
         id = f"{name}_{row.Index}"
         user_message = row.text
@@ -60,11 +40,11 @@ for name, df in test_dfs.items():
 # initialize gpt api wrapper class with gpt 3.5 turbo 0125 model.
 generator = Generator(api_key=api_key, model="gpt-3.5-turbo-0125")
 # generate result
-result = generator.generate_batch(content)
+result = generator.generate_batch(content, threads=10)
 
 result_dfs = {}
 for name in names:
-    result_dfs[name] = test_dfs[name].copy()
+    result_dfs[name] = dfs_test[name].copy()
     result_dfs[name]["predicted"] = None
 
 
@@ -72,30 +52,43 @@ for id, label in result.items():
     df_name, row_index = id.split("_")[0], int(id.split("_")[1])
     result_dfs[df_name].at[row_index, 'predicted'] = label
 
-print(result_dfs["Twitter"])
-results = {}
+
+results = []
 for name in names:  
     y_test = result_dfs[name]["label"]
     y_pred = result_dfs[name]["predicted"].astype("int64")
     # Evaluate classifier
-    report = classification_report(y_test, y_pred, output_dict=True)
+    report = classification_report(y_test, y_pred, output_dict=True, zero_division=0)
     accuracy = accuracy_score(y_test, y_pred)
+    precision = precision_score(y_test, y_pred, average='weighted', zero_division=0)
+    recall = recall_score(y_test, y_pred, average='weighted')
+    f1 = f1_score(y_test, y_pred, average='weighted')
     
-    results[name] = {
-        'classification_report': report,
-        'accuracy': accuracy
-    }
+    # Collect results for each class
+    for cls in ['0', '1']:
+        results.append({
+            'Test Dataset': name,
+            'Class': cls,
+            'Precision': report[cls]['precision'],
+            'Recall': report[cls]['recall'],
+            'F1-Score': report[cls]['f1-score'],
+            'Accuracy': np.nan  # Accuracy is not class-specific
+        })
+    
+    # Include the overall metrics for the test dataset
+    results.append({
+        'Test Dataset': name,
+        'Class': 'overall',
+        'Precision': precision,
+        'Recall': recall,
+        'F1-Score': f1,
+        'Accuracy': accuracy
+    })
 
-# Convert results to DataFrame for display
-results_df = pd.DataFrame({
-    name: {
-        'accuracy': results[name]['accuracy'],
-        'precision': results[name]['classification_report']['weighted avg']['precision'],
-        'recall': results[name]['classification_report']['weighted avg']['recall'],
-        'f1-score': results[name]['classification_report']['weighted avg']['f1-score']
-    }
-    for name in names
-}).T
+results_df = pd.DataFrame(results)
+
+# Save the results DataFrame to a CSV file
+results_df.to_csv('hate-speech-classification/ml/results/gpt_baseline_classification_results.csv', index=False)
 
 # Display the results DataFrame
 print(results_df)
