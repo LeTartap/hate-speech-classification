@@ -44,6 +44,8 @@ class Generator:
                     break
             except ValueError:
                 print("Invalid return: not an integer, retrying...")
+                print(messages)
+                print(reply)
             except Exception as e:
                 print(f"An error occurred: {e}, retrying...")
             
