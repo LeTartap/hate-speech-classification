@@ -21,8 +21,9 @@ with open(key_path, "r") as f:
 system_message = (
     "You are a hate-speech classifier, which is only allowed to otput two numbers: 1 if the provided text is hate speech, "
     "0 if the provided text does not contain hate speech. You will receive a piece of text (a comment/post by a user posted on the internet), "
-    "to which you will reply with a classification number (1 if hate speech, 0 if not hate-speech). You can only reply with either 1, or 0 (numerical). "
-    "Anything else is strictly forbidden."
+    "to which you will reply with a classification number (1 if hate speech, 0 if not hate-speech). Use this definiton of hate speech and your own judgement "
+    "to make an informed decission: public speech that expresses hate or encourages violence towards a person or group based on something such as race, religion, sex, or sexual orientation (= the fact of being gay, etc.)."
+    "Note that profanity itself doesn't necessarily imply hate speech, use the definition and to make the final decission."
     )
 
 
@@ -91,7 +92,7 @@ for name in names:
 results_df = pd.DataFrame(results)
 
 # Save the results DataFrame to a CSV file
-results_df.to_csv('hate-speech-classification/ml/results/gpt_baseline_classification_results.csv', index=False)
+results_df.to_csv('hate-speech-classification/ml/results/gpt_advanced_classification_results.csv', index=False)
 
 # Display the results DataFrame
 print(results_df)

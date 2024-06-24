@@ -11,6 +11,7 @@ class Generator:
         self.client = OpenAI(api_key=api_key)
 
     def generate_text(self, messages, parameters):
+        print("Generating a text.")
         num_errors = 0
         while True:
             while True:
@@ -43,6 +44,8 @@ class Generator:
                     break
             except ValueError:
                 print("Invalid return: not an integer, retrying...")
+                print(messages)
+                print(reply)
             except Exception as e:
                 print(f"An error occurred: {e}, retrying...")
             
