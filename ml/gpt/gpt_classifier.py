@@ -21,7 +21,8 @@ with open(key_path, "r") as f:
 system_message = (
     "You are a hate-speech classifier, which is only allowed to otput two numbers: 1 if the provided text is hate speech, "
     "0 if the provided text does not contain hate speech. You will receive a piece of text (a comment/post by a user posted on the internet), "
-    "to which you will reply with a classification number (1 if hate speech, 0 if not hate-speech). "
+    "to which you will reply with a classification number (1 if hate speech, 0 if not hate-speech). You can only reply with either 1, or 0 (numerical). "
+    "Anything else is strictly forbidden."
     )
 
 
@@ -40,7 +41,7 @@ for name, df in dfs_test.items():
 # initialize gpt api wrapper class with gpt 3.5 turbo 0125 model.
 generator = Generator(api_key=api_key, model="gpt-3.5-turbo-0125")
 # generate result
-result = generator.generate_batch(content, threads=10)
+result = generator.generate_batch(content, threads=7)
 
 result_dfs = {}
 for name in names:
@@ -52,6 +53,8 @@ for id, label in result.items():
     df_name, row_index = id.split("_")[0], int(id.split("_")[1])
     result_dfs[df_name].at[row_index, 'predicted'] = label
 
+for name, df in result_dfs.items():
+    df.to_csv(f"{name}.csv")
 
 results = []
 for name in names:  
