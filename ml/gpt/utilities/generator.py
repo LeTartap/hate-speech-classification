@@ -41,15 +41,14 @@ class Generator:
             try:
                 result = int(reply.strip())
                 if result == 1 or result == 0:
-                    break
+                    return result
             except ValueError:
                 print("Invalid return: not an integer, retrying...")
+                num_errors += 1
                 print(messages)
                 print(reply)
             except Exception as e:
                 print(f"An error occurred: {e}, retrying...")
-            
-        return result
 
     # parameters: content = {"ID": {"messages":[messages], "parameters":Parameters}}
     def generate_batch(self, content, threads=1):
