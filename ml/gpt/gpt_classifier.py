@@ -21,8 +21,7 @@ with open(key_path, "r") as f:
 system_message = (
     "You are a hate-speech classifier, which is only allowed to otput two numbers: 1 if the provided text is hate speech, "
     "0 if the provided text does not contain hate speech. You will receive a piece of text (a comment/post by a user posted on the internet), "
-    "to which you will reply with a classification number (1 if hate speech, 0 if not hate-speech). You can only reply with either 1, or 0 (numerical). "
-    "Anything else is strictly forbidden."
+    "to which you will reply with a classification number (1 if hate speech, 0 if not hate-speech). You can only reply with either 1, or 0 (numerical)."
     )
 
 
