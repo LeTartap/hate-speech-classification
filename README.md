@@ -7,6 +7,13 @@ This project analyzes and compares the effectiveness of various machine learning
 The proliferation of online social media has amplified the need for robust and accurate hate speech detection systems. This research investigates the performance of different classification models on a diverse dataset aggregated from Facebook, Reddit, Twitter, and YouTube. By standardizing and cleaning data from these varied sources, this study provides a comprehensive benchmark of model performance, highlighting the strengths of modern transformer architectures like BERT, RoBERTa, and ELECTRA against traditional methods such as TF-IDF and Word2Vec.
 
 The central research question is: **What, if any, is the difference between textual hate-speech detection across various social media platforms?**
+- [**View the Full Report (PDF)**](./AAIB G10 Report.pdf)
+- [**View the Project Presentation (PPTX)**](./AAIB G10 Presentation.pdf)
+
+## Abstract
+The rise of social media platforms has led to an increased need for effective hate speech detection to maintain a safe online environment. This study explores the performance of various machine learning models, comparing traditional approaches with state-of-the-art transformer-based models in the context of hate speech detection across different social media platforms. Using datasets from Reddit, Twitter, Facebook, and YouTube, we standardized and cleaned the data to ensure consistency and robustness. We evaluated traditional models including TF-IDF, Word2Vec trained from scratch, and Word2Vec pre-trained on Google News, as well as advanced transformer models like BERT, RoBERTa, ELECTRA, and GPT-3.5. Our findings reveal that pre-trained transformer models, particularly ELECTRA, outperform traditional methods, indicating the importance of advanced context-aware techniques in hate speech detection. This research underscores the necessity of tailored moderation strategies that can adapt to the unique linguistic styles of different platforms.
+
+## Full Report 
 
 ### Key Objectives
 
