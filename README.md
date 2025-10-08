@@ -8,7 +8,7 @@ The proliferation of online social media has amplified the need for robust and a
 
 The central research question is: **What, if any, is the difference between textual hate-speech detection across various social media platforms?**
 
-* **[Final Project Poster](./AAIB%20G10%20Report.pdf)**: A high-resolution PDF of the project summary poster.
+* **[Project Report pdf](./AAIB%20G10%20Report.pdf)**
 
 
 ## Abstract
