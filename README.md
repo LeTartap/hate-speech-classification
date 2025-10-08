@@ -109,3 +109,9 @@ A wide range of models were trained and evaluated to provide a thorough comparis
       * For **BERT, RoBERTa, and ELECTRA**, use `ml/Bert_modelandeval.ipynb`.
       * For **TF-IDF and Word2Vec**, use the respective notebooks (`tf-idf.ipynb`, `w2v.ipynb`, etc.).
 3.  **View Results**: All evaluation metrics, confusion matrices, and performance plots are generated and saved in the `ml/results/` directory.
+4.  
+### Authors
+* David Galati
+* Cosmin Ghiauru
+* Hani Wakim
+* Vitalii Fishchuk
